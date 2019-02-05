@@ -42,6 +42,9 @@
     Item: <input type="text" name="item"/> <br/>
     Supplier: <input type="text" name="supplier"/> <br/>
     Price: <input type="text" name="price"/> <br/>
+    Start: <input type="text" name="start"/> <br/>
+    <p>* format yyyy-mm-dd</p>
+    <br/>
     <input type="submit" value="Add"/>
 </form>
 <br/>
@@ -52,8 +55,9 @@
 <strong>Add an Item to Inventory</strong>
 <form action="/cgi-bin/inventory_add.py" method="post">
     Item: <input type="text" name="item"/> <br/>
-    Need: <input type="text" name="need"/> <br/>
-    Have: <input type="text" name="have"/> <br/>
+    Supplier: <input type="text" name="supplier"/> <br/>
+    Purchase date: <input type="text" name="purchase_date"/> <br/>
+    Quantity: <input type="text" name="quantity"/> <br/>
     <input type="submit" value="Add"/>
 </form>
 <br/>

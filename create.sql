@@ -8,7 +8,8 @@ USE serious_project_1;
 
 CREATE TABLE item (
 	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `name` VARCHAR(64) NOT NULL
+    `name` VARCHAR(64) NOT NULL,
+    `need` INT NOT NULL DEFAULT 0
 );
 
 
@@ -25,8 +26,9 @@ CREATE TABLE catalog (
     `item_id` INT NOT NULL,
     `supplier_id` INT NOT NULL,
     `price` DOUBLE NOT NULL,
-    `discontinued` BOOL NOT NULL DEFAULT FALSE,
-    PRIMARY KEY (`item_id`, `supplier_id`),
+    `start` DATE NOT NULL,
+    `end` DATE,
+    PRIMARY KEY (`item_id`, `supplier_id`, `start`),
     CONSTRAINT catalog_fk_supplier FOREIGN KEY (`supplier_id`)
         REFERENCES supplier (`id`),
 	CONSTRAINT catalog_fk_item FOREIGN KEY (`item_id`)
@@ -35,9 +37,11 @@ CREATE TABLE catalog (
 
 
 CREATE TABLE inventory (
-    `item_id` INT NOT NULL PRIMARY KEY,
-    `need` INT NOT NULL DEFAULT 0,
-    `have` INT NOT NULL DEFAULT 0,
+	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `item_id` INT NOT NULL,
+    `supplier_id` INT NOT NULL,
+    `purchase_date` DATE NOT NULL,
+    `quantity` INT NOT NULL DEFAULT 0,
     CONSTRAINT inventory_fk_item FOREIGN KEY (item_id)
         REFERENCES item (id)
 );
@@ -66,20 +70,20 @@ VALUES
 
 
 -- add catalog items
-INSERT INTO catalog (`item_id`, `supplier_id`, `price`)
+INSERT INTO catalog (`item_id`, `supplier_id`, `price`, `start`)
 VALUES
-(1, 1,  15.00),
-(2, 1,  19.99),
-(3, 2, 399.99),
-(4, 3,  10.49),
-(5, 4,   9.99),
-(6, 5,   4.99);
+(1, 1,  15.00, '2019-01-01'),
+(2, 1,  19.99, '2019-01-01'),
+(3, 2, 399.99, '2019-01-01'),
+(4, 3,  10.49, '2019-01-01'),
+(5, 4,   9.99, '2019-01-01'),
+(6, 5,   4.99, '2019-01-01');
 
 -- add inventory
-INSERT INTO inventory (`item_id`, `need`)
+INSERT INTO inventory (`item_id`, `supplier_id`, `purchase_date`, `quantity`)
 VALUES
-(1,  2),
-(3,  1),
-(4,  3),
-(5,  2),
-(6, 99);
+(1,  1, '2019-02-01', 2),
+(3,  2, '2019-02-01', 1),
+(4,  3, '2019-02-01', 3),
+(5,  4, '2019-02-01', 2),
+(6,  5, '2019-02-01', 99);

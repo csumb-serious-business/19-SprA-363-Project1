@@ -123,31 +123,31 @@ class BaseCGI(object):
 
 
 class InventoryAdd(BaseCGI):
-    q_inventory_exists = '''
-        SELECT 1
-        FROM inventory v
-        JOIN item i ON v.item_id = i.id
-        WHERE i.name = '%s';
-        '''
-
     q_inventory_add = '''
-        INSERT INTO inventory (item_id, need, have) VALUES (
+        INSERT INTO inventory (item_id, supplier_id, purchase_date, quantity) VALUES (
             (SELECT id FROM item WHERE name = '%s'),
+            (SELECT id FROM supplier WHERE name = '%s'),
             ('%s'),
             ('%s')
         );
         '''
 
     q_inventory = '''
-        SELECT i.name, need, have
+        SELECT v.id, i.name, s.name, v.purchase_date, v.quantity, i.need
         FROM inventory v
         JOIN item i ON v.item_id = i.id
+        JOIN supplier s ON v.supplier_id = s.id
         ORDER BY i.name;
         '''
-
     q_item_exists = '''
         SELECT 1
         FROM item
+        WHERE name = '%s';
+        '''
+
+    q_supplier_exists = '''
+        SELECT 1
+        FROM supplier
         WHERE name = '%s';
         '''
 
@@ -160,19 +160,21 @@ class InventoryAdd(BaseCGI):
 
         # retrieve input values
         item = form["item"].value
-        need = form["need"].value
-        have = form["have"].value
+        supplier = form["supplier"].value
+        purchase_date = form["purchase_date"].value
+        quantity = form["quantity"].value
 
         # item exists?
         if not self.query_get_first(self.q_item_exists % item):
             self.add_result('result', 'The item: %s needs to be added to items before continuing' % item)
 
-        # inventory item exists?
-        elif not self.query_get_first(self.q_inventory_exists % item):
-            self.query_committed(self.q_inventory_add % (item, need, have))
-            self.add_result('result', 'Added Inventory item: %s' % item)
+        # supplier exists?
+        elif not self.query_get_first(self.q_supplier_exists % supplier):
+            self.add_result('result', 'The supplier: %s needs to be added to suppliers before continuing' % supplier)
+        # todo check if it is in catalog
         else:
-            self.add_result('result', '%s is already in the Inventory' % item)
+            self.query_committed(self.q_inventory_add % (item, supplier, purchase_date, quantity))
+            self.add_result('result', 'Added Catalog item: %s at %s' % (item, supplier))
 
         updated_items = [('item', 'need', 'have')]
         updated_items.extend(self.query_get_all(self.q_inventory))

@@ -122,11 +122,14 @@ class BaseCGI(object):
         return table_template
 
 
+# todo escape all sql
 class Browse(BaseCGI):
+    # todo add price
     q_inventory = '''
-        SELECT i.name, need, have
+        SELECT v.id, i.name, s.name, v.purchase_date, v.quantity, i.need
         FROM inventory v
         JOIN item i ON v.item_id = i.id
+        JOIN supplier s ON v.supplier_id = s.id
         ORDER BY i.name;
         '''
 
@@ -137,11 +140,11 @@ class Browse(BaseCGI):
         '''
 
     q_catalog = '''
-        SELECT i.name, s.name, price, discontinued
+        SELECT i.name, s.name, price, start, end
         FROM catalog c
         JOIN item i ON c.item_id = i.id
         JOIN supplier s ON c.supplier_id = s.id
-        ORDER BY i.name, discontinued, price, s.name;
+        ORDER BY i.name, start, price, s.name;
         '''
 
     def __init__(self):
