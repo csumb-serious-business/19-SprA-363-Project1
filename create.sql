@@ -1,7 +1,6 @@
 -- create/recreate database
 DROP DATABASE IF EXISTS serious_project_1;
 
-
 CREATE DATABASE serious_project_1;
 USE serious_project_1;
 
@@ -19,7 +18,6 @@ CREATE TABLE supplier (
     `address` VARCHAR(256) NOT NULL,
     `phone` VARCHAR(10) NOT NULL
 );
-
 
 
 CREATE TABLE catalog (
@@ -43,7 +41,9 @@ CREATE TABLE inventory (
     `purchase_date` DATE NOT NULL,
     `quantity` INT NOT NULL DEFAULT 0,
     CONSTRAINT inventory_fk_item FOREIGN KEY (item_id)
-        REFERENCES item (id)
+        REFERENCES item (id),
+	CONSTRAINT inventory_fk_supplier FOREIGN KEY (`supplier_id`)
+        REFERENCES supplier (`id`)
 );
 
 
