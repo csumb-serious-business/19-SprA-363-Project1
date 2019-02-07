@@ -26,10 +26,10 @@ CREATE TABLE catalog (
     `start` DATE NOT NULL,
     `end` DATE,
     PRIMARY KEY (`item_id`, `supplier_id`, `start`),
-    CONSTRAINT catalog_fk_supplier FOREIGN KEY (`supplier_id`)
-        REFERENCES supplier (`id`),
+ --   CONSTRAINT catalog_fk_supplier FOREIGN KEY (`supplier_id`)
+  --      REFERENCES supplier (`id`),
 	CONSTRAINT catalog_fk_item FOREIGN KEY (`item_id`)
-        REFERENCES item (`id`)
+      REFERENCES item (`id`)
 );
 
 
@@ -39,10 +39,10 @@ CREATE TABLE inventory (
     `supplier_id` INT NOT NULL,
     `purchase_date` DATE NOT NULL,
     `quantity` INT NOT NULL DEFAULT 0,
-    CONSTRAINT inventory_fk_item FOREIGN KEY (`item_id`)
-        REFERENCES item (`id`),
-	CONSTRAINT inventory_fk_supplier FOREIGN KEY (`supplier_id`)
-        REFERENCES supplier (`id`)
+--    CONSTRAINT inventory_fk_item FOREIGN KEY (`item_id`)
+  --      REFERENCES item (`id`),
+	-- CONSTRAINT inventory_fk_supplier FOREIGN KEY (`supplier_id`)
+   --     REFERENCES supplier (`id`)
 );
 
 -- fact table
@@ -50,14 +50,11 @@ CREATE TABLE fact (
 	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	`item_id` INT NOT NULL,
 	`supplier_id` INT NOT NULL,
-	-- `catalog_id` INT NOT NULL,
-    `purchase_date` DATE NOT NULL,
-    `quantity` INT NOT NULL DEFAULT 0,
-	-- `need` INT NOT NULL DEFAULT 0
-	-- `price` DOUBLE NOT NULL,
-	-- `start` DATE NOT NULL,
-    -- `end` DATE,
-    -- todo 1: this is showing up as the primary key
+    `purchase_date` DATE NOT NULL, -- most recent items purchased
+    `quantity` INT NOT NULL DEFAULT 0, -- top items in inventory
+	`price` DOUBLE NOT NULL, -- used to find the best selling items
+	`start` DATE NOT NULL, -- used to find most items purchased to date
+    `end` DATE, -- end date of discontinued items
     CONSTRAINT fact_fk_inventory FOREIGN KEY (`id`)
 		REFERENCES inventory (`id`),
 	
@@ -66,15 +63,6 @@ CREATE TABLE fact (
     
     CONSTRAINT fact_fk_supplier FOREIGN KEY (`supplier_id`)
         REFERENCES supplier (`id`)
- 	
-    -- todo 2: there is no catalog id
-	-- todo 3: do i need to add purchase_date and quantity as foreign keys
-	-- CONSTRAINT fact_fk_purchase_date FOREIGN KEY (`purchase_date`)
-	-- REFERENCES inventory (`purchase_date`),
-
-	-- CONSTRAINT fact_fk_quantity FOREIGN KEY (`quantity`)
-	-- REFERENCES inventory (`quantity`)        
-
 );
 -- add items
 INSERT INTO item (name)
