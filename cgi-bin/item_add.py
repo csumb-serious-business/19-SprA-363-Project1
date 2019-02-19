@@ -26,7 +26,7 @@ class BaseCGI(object):
             # connect to database
             self.connection = mysql.connector.connect(user='root',
                                                       password=PASSWORD,
-                                                      database='serious_project_1',
+                                                      database='serious_oltp',
                                                       host='127.0.0.1')
             # do the work
             self._run()

@@ -1,12 +1,12 @@
 -- create/recreate database
-DROP DATABASE IF EXISTS serious_project_1;
+DROP DATABASE IF EXISTS serious_oltp;
 
-CREATE DATABASE serious_project_1;
-USE serious_project_1;
+CREATE DATABASE serious_oltp;
+USE serious_oltp;
 
 
 CREATE TABLE item (
-	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `name` VARCHAR(64) NOT NULL,
     `need` INT NOT NULL DEFAULT 0
 );
@@ -21,41 +21,41 @@ CREATE TABLE supplier (
 
 
 CREATE TABLE catalog (
+    `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `item_id` INT NOT NULL,
     `supplier_id` INT NOT NULL,
     `price` DOUBLE NOT NULL,
     `start` DATE NOT NULL,
     `end` DATE,
-    PRIMARY KEY (`item_id`, `supplier_id`, `start`),
     CONSTRAINT catalog_fk_supplier FOREIGN KEY (`supplier_id`)
         REFERENCES supplier (`id`),
-	CONSTRAINT catalog_fk_item FOREIGN KEY (`item_id`)
+	  CONSTRAINT catalog_fk_item FOREIGN KEY (`item_id`)
         REFERENCES item (`id`)
 );
 
 
 CREATE TABLE inventory (
-	`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	  `id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     `item_id` INT NOT NULL,
     `supplier_id` INT NOT NULL,
     `purchase_date` DATE NOT NULL,
     `quantity` INT NOT NULL DEFAULT 0,
-    CONSTRAINT inventory_fk_item FOREIGN KEY (item_id)
-        REFERENCES item (id),
-	CONSTRAINT inventory_fk_supplier FOREIGN KEY (`supplier_id`)
+    CONSTRAINT inventory_fk_item FOREIGN KEY (`item_id`)
+        REFERENCES item (`id`),
+	  CONSTRAINT inventory_fk_supplier FOREIGN KEY (`supplier_id`)
         REFERENCES supplier (`id`)
 );
 
 
 -- add items
-INSERT INTO item (name)
+INSERT INTO item (`name`, `need`)
 VALUES 
-	("Soccer Ball"),
-    ("Hat"),
-    ("LED TV"),
-    ("Multivitamin"),
-    ("Oil Filter"),
-    ("Red Balloons");
+("Soccer Ball"  , 1),
+("Hat"          , 3),
+("LED TV"       , 2),
+("Multivitamin" , 4),
+("Oil Filter"   , 0),
+("Red Balloons" , 98);
 
 
 -- add suppliers
@@ -70,20 +70,21 @@ VALUES
 
 
 -- add catalog items
-INSERT INTO catalog (`item_id`, `supplier_id`, `price`, `start`)
+INSERT INTO catalog (`item_id`, `supplier_id`, `price`, `start`, `end`)
 VALUES
-(1, 1,  15.00, '2019-01-01'),
-(2, 1,  19.99, '2019-01-01'),
-(3, 2, 399.99, '2019-01-01'),
-(4, 3,  10.49, '2019-01-01'),
-(5, 4,   9.99, '2019-01-01'),
-(6, 5,   4.99, '2019-01-01');
+(1, 1,  15.00, '2019-01-01', '2019-02-01'),
+(2, 1,  19.99, '2019-01-02', '2019-03-01'),
+(3, 2, 399.99, '2019-01-03', '2019-04-01'),
+(4, 3,  10.49, '2019-01-03', '2019-05-01'),
+(5, 4,   9.99, '2019-01-05', '2019-06-01'),
+(6, 5,   4.99, '2019-01-06', null);
+
 
 -- add inventory
 INSERT INTO inventory (`item_id`, `supplier_id`, `purchase_date`, `quantity`)
 VALUES
 (1,  1, '2019-02-01', 2),
-(3,  2, '2019-02-01', 1),
-(4,  3, '2019-02-01', 3),
-(5,  4, '2019-02-01', 2),
-(6,  5, '2019-02-01', 99);
+(3,  2, '2019-02-02', 1),
+(4,  3, '2019-02-03', 3),
+(5,  4, '2019-02-04', 2),
+(6,  5, '2019-02-05', 99);
